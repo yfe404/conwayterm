@@ -74,29 +74,13 @@ def update_cells(prev, window):
     return {**new, **will_born(prev, window)}
 
 
-def redisplay(snowflakes, window):
-    for position, char in snowflakes.items():
+def redisplay(cells, window):
+    for position, char in cells.items():
         max_height, max_width = max_dimensions(window)
         if position.y > max_height or position.x >= max_width:
             continue
         window.addch(position.y, position.x, char)
 
-
-def draw_moon(window):
-    moon = [
-        '  **   ',
-        '   *** ',
-        '    ***',
-        '    ***',
-        '   *** ',
-        '  **   ',
-    ]
-    start_position = max_dimensions(window)[1] - 10
-    window.attrset(curses.color_pair(1))
-    for height, line in enumerate(moon, start=1):
-        for position, sym in enumerate(line, start=start_position):
-            window.addch(height, position, sym)
-    window.attrset(curses.color_pair(0))
 
 
 def main(window, speed):
@@ -104,7 +88,6 @@ def main(window, speed):
         curses.init_color(curses.COLOR_BLACK, 0,0,0)
         curses.init_color(curses.COLOR_WHITE, 1000, 1000, 1000)
         curses.init_color(curses.COLOR_YELLOW, 1000, 1000, 0)
-    curses.init_pair(1, curses.COLOR_YELLOW, 0)
     try:
         curses.curs_set(0)
     except Exception:
@@ -122,7 +105,6 @@ def main(window, speed):
         cells = update_cells(cells, window)
 
         window.clear()
-        draw_moon(window)
         redisplay(cells, window)
         window.refresh()
         try:
@@ -138,7 +120,7 @@ if __name__ == '__main__':
             speed = int(sys.argv[1])
         except ValueError:
             print(
-                'Usage:\npython snowterm.py [SPEED]\n'
+                'Usage:\npython conwayterm.py [SPEED]\n'
                 'SPEED is integer representing percents.',
             )
             sys.exit(1)
